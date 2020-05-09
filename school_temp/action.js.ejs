@@ -1,0 +1,36 @@
+export const <%= process.env.upperEntityPath%>_NAMESPACE = '<%= process.env.entityPath%>';
+
+export function <%= process.env.upperEntityPath%>_LIST(payload) {
+  return {
+    type: `${<%= process.env.upperEntityPath%>_NAMESPACE}/fetchList`,
+    payload,
+  };
+}
+
+export function <%= process.env.upperEntityPath%>_DETAIL(<%= _.camelCase(table[0].propertyName)%>) {
+  return {
+    type: `${<%= process.env.upperEntityPath%>_NAMESPACE}/fetchDetail`,
+    payload: { <%=_.camelCase(table[0].propertyName)%> },
+  };
+}
+
+export function <%= process.env.upperEntityPath%>_CLEAR_DETAIL() {
+  return {
+    type: `${<%= process.env.upperEntityPath%>_NAMESPACE}/clearDetail`,
+    payload: {},
+  };
+}
+
+export function <%= process.env.upperEntityPath%>_SUBMIT(payload) {
+  return {
+    type: `${<%= process.env.upperEntityPath%>_NAMESPACE}/submit`,
+    payload,
+  };
+}
+
+export function <%= process.env.upperEntityPath%>_REMOVE(payload) {
+  return {
+    type: `${<%= process.env.upperEntityPath%>_NAMESPACE}/remove`,
+    payload,
+  };
+}

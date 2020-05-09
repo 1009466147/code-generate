@@ -1,0 +1,30 @@
+import { stringify } from 'qs';
+import func from '../utils/Func';
+import request from '../utils/request';
+import { <%=process.env.route%> } from '../../config/gateway';
+
+export async function list(params) {
+  return request(`/api/${<%=process.env.route%>}/<%=process.env.entityKey%>/list?${stringify(params, { filter: func.filterFunc })}`);
+}
+
+export async function submit(params) {
+  return request(`/api/${<%=process.env.route%>}/<%=process.env.entityKey%>/submit`, {
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function detail(params) {
+  return request(`/api/${<%=process.env.route%>}/<%=process.env.entityKey%>/detail?${stringify(params, { filter: func.filterFunc })}`);
+}
+
+export async function remove(params) {
+  return request(`/api/${<%=process.env.route%>}/<%=process.env.entityKey%>/remove`, {
+    method: 'POST',
+    body: func.toFormData(params),
+  });
+}
+
+export async function options(params) {
+  return request(`/api/${<%=process.env.route%>}/<%=process.env.entityKey%>/options?${stringify(params, { filter: func.filterFunc })}`);
+}

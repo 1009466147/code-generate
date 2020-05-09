@@ -1,0 +1,72 @@
+import React, { PureComponent } from 'react';
+import router from 'umi/router';
+import { Form, Card, Button } from 'antd';
+import { connect } from 'dva';
+import Panel from '../../../components/Panel';
+import styles from '../../../layouts/Sword.less';
+import { <%=process.env.upperEntityPath%>_DETAIL } from '../../../actions/<%=process.env.entityPath%>';
+
+const FormItem = Form.Item;
+
+@connect(({ <%=process.env.entityPath%> }) => ({
+  <%=process.env.entityPath%>,
+}))
+@Form.create()
+class <%=process.env.entity%>View extends PureComponent {
+  componentWillMount() {
+    const {
+      dispatch,
+      match: {
+        params: { id },
+      },
+    } = this.props;
+    dispatch(<%=process.env.upperEntityPath%>_DETAIL(id));
+  }
+
+  handleEdit = () => {
+    const {
+      match: {
+        params: { id },
+      },
+    } = this.props;
+    router.push(`/<%=process.env.servicePackage%>/<%=process.env.entityPath%>/edit/${id}`);
+  };
+
+  render() {
+    const {
+      <%=process.env.entityPath%>: { detail },
+    } = this.props;
+
+    const formItemLayout = {
+        labelCol: {
+            span: 5,
+        },
+        wrapperCol: {
+            span: 6,
+        },
+    };
+
+    const action = (
+      <Button type="primary" onClick={this.handleEdit}>
+        修改
+      </Button>
+    );
+
+    return (
+      <Panel title="查看" back="/<%=process.env.servicePackage%>/<%=process.env.entityPath%>" action={action}>
+        <Form hideRequiredMark style={{ marginTop: 8 }}>
+          <Card className={styles.card} bordered={false}>
+<%_ for(let i=0; i<table.length; i++) {_%>
+  <%_ if(!process.env.tenantColumn.includes(table[i].name)) { _%>
+            <FormItem {...formItemLayout} label="<%=table[i].comment%>">
+              <span>{detail.<%=table[i].propertyName%>}</span>
+            </FormItem>
+  <%_}_%>
+<%_}_%>
+          </Card>
+        </Form>
+      </Panel>
+    );
+  }
+}
+export default <%=process.env.entity%>View;

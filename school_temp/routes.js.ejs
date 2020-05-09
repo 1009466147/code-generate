@@ -1,0 +1,11 @@
+{
+  path: '/<%= process.env.servicePackage%>/<%= process.env.entityPath.toLocaleLowerCase()%>',
+  routes: [
+    { path: '/<%= process.env.servicePackage%>/<%= process.env.entityPath.toLocaleLowerCase()%>', redirect: '/<%= process.env.servicePackage%>/<%= process.env.entityPath.toLocaleLowerCase()%>/list' },
+    { path: '/<%= process.env.servicePackage%>/<%= process.env.entityPath.toLocaleLowerCase()%>/list', component: './<%= process.env.servicePackageUpperFirst%>/<%= process.env.entity%>/<%= process.env.entity%>' },
+    { path: '/<%= process.env.servicePackage%>/<%= process.env.entityPath.toLocaleLowerCase()%>/add', component: './<%= process.env.servicePackageUpperFirst%>/<%= process.env.entity%>/<%= process.env.entity%>Edit' },
+    { path: '/<%= process.env.servicePackage%>/<%= process.env.entityPath.toLocaleLowerCase()%>/edit/:id', component: './<%= process.env.servicePackageUpperFirst%>/<%= process.env.entity%>/<%= process.env.entity%>Edit' },
+    { path: '/<%= process.env.servicePackage%>/<%= process.env.entityPath.toLocaleLowerCase()%>/view/:id', component: './<%= process.env.servicePackageUpperFirst%>/<%= process.env.entity%>/<%= process.env.entity%>View' },
+  ],
+},
+

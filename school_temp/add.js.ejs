@@ -1,0 +1,71 @@
+import React, { PureComponent } from 'react';
+import { Form, Input, Card, Button } from 'antd';
+import { connect } from 'dva';
+import Panel from '../../../components/Panel';
+import styles from '../../../layouts/Sword.less';
+import { <%=process.env.upperEntityPath%>_SUBMIT } from '../../../actions/<%=table.entityPath%>';
+
+const FormItem = Form.Item;
+
+@connect(({ loading }) => ({
+  submitting: loading.effects['<%=table.entityPath%>/submit'],
+}))
+@Form.create()
+class <%=process.env.entity%>Add extends PureComponent {
+  handleSubmit = e => {
+    e.preventDefault();
+    const { dispatch, form } = this.props;
+    form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        dispatch(<%=process.env.upperEntityPath%>_SUBMIT(values));
+      }
+    });
+  };
+
+  render() {
+    const {
+      form: { getFieldDecorator },
+      submitting,
+    } = this.props;
+
+    const formItemLayout = {
+        labelCol: {
+            span: 5,
+        },
+        wrapperCol: {
+            span: 6,
+        },
+    };
+
+    const action = (
+      <Button type="primary" onClick={this.handleSubmit} loading={submitting}>
+        提交
+      </Button>
+    );
+
+    return (
+      <Panel title="新增" back="/<%=process.env.servicePackage%>/<%=process.env.entityPath%>" action={action}>
+        <Form hideRequiredMark style={{ marginTop: 8 }}>
+          <Card className={styles.card} bordered={false}>
+            <%_ for(let i=0; i<table.length; i++) {_%>
+                <%_ if(!process.env.tenantColumn.includes(table[i].name)){ _%>
+            <FormItem {...formItemLayout} label="<%=table[i].comment%>">
+                {getFieldDecorator('<%=table[i].propertyName%>', {
+                    rules: [
+                    {
+                        required: true,
+                        message: '请输入<%=table[i].comment%>',
+                    },
+                    ],
+                })(<Input placeholder="请输入<%=table[i].comment%>" />)}
+            </FormItem>
+                <%_}_%>
+            <%_}_%>
+          </Card>
+        </Form>
+      </Panel>
+    );
+  }
+}
+
+export default <%=process.env.entity%>Add;

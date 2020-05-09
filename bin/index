@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+const co = require('co');
+const path = require('path');
+const fs = require('fs');
+const chalk = require('chalk');
+const program = require('commander');
+const _ = require('lodash');
+const scaffold = require('../');
+
+
+function run(notExistError) {
+  if (!fs.existsSync(process.env.ENV_FILE)) {
+    console.log(notExistError);
+    process.exit(0);
+  } else {
+    co(scaffold)
+    .catch(err => {
+        console.warn(chalk.red(err.message));
+      });
+  }
+}
+
+program
+  .version('0.0.1')
+  .usage('<dist_relative_path>')
+  .description('创建前端管理项目的  模板')
+  .option('-f, --file <file>', '指定.env配置文件')
+  .option('-t, --templates <template_root>', '指定模板根目录')
+  .parse(process.argv);
+
+const dist = program.args[0];
+const templateRoot = program.templates;
+
+if (dist) process.env.DIST_ROOT = dist;
+
+if (templateRoot) {
+  if (!fs.existsSync(templateRoot)) {
+    console.log('错误：模板文件不存在');
+    process.exit(0);
+  }
+  // process.env.TEMPLATE_ROOT = path.join(process.cwd(), templateRoot);
+} else {
+  // process.env.TEMPLATE_ROOT = path.join(__dirname, '../templates');
+}
+
+if (!program.file) {
+  process.env.ENV_FILE = path.join(process.cwd(), '.env');
+  run('当前目录下不存在.env文件，请创建或指定.env文件\n');
+} else {
+  // 制定 .env 文件
+  process.env.ENV_FILE = path.join(process.cwd(), program.file);
+  run('错误：指定的.env文件不存在\n');
+}

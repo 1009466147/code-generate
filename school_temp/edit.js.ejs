@@ -1,0 +1,98 @@
+import React, { PureComponent } from 'react';
+import { Form, Input, Card, Button } from 'antd';
+import { connect } from 'dva';
+import Panel from '../../../components/Panel';
+import styles from '../../../layouts/Sword.less';
+import { <%=process.env.upperEntityPath%>_DETAIL, <%=process.env.upperEntityPath%>_SUBMIT } from '../../../actions/<%=process.env.entityPath%>';
+
+const FormItem = Form.Item;
+
+@connect(({ <%=process.env.entityPath%>, loading }) => ({
+  <%=process.env.entityPath%>,
+  submitting: loading.effects['<%=process.env.entityPath%>/submit'],
+}))
+@Form.create()
+class <%=process.env.entity%>Edit extends PureComponent {
+  componentWillMount() {
+    this.props.<%=process.env.entityPath%>.detail = {};
+    const {
+      dispatch,
+      match: {
+        params: { id },
+      },
+    } = this.props;
+    if (id) {
+      dispatch(<%=process.env.upperEntityPath%>_DETAIL(id));
+    }
+  }
+
+  handleSubmit = e => {
+    e.preventDefault();
+    const {
+      dispatch,
+      match: {
+        params: { id },
+      },
+      form,
+    } = this.props;
+    form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        const params = {
+          <%=table[0].propertyName%>: id,
+          ...values,
+        };
+        console.log(params);
+        dispatch(<%=process.env.upperEntityPath%>_SUBMIT(params));
+      }
+    });
+  };
+
+  render() {
+    const {
+      form: { getFieldDecorator },
+      <%=process.env.entityPath%>: { detail },
+      submitting,
+    } = this.props;
+
+    const formItemLayout = {
+        labelCol: {
+            span: 5,
+        },
+        wrapperCol: {
+            span: 6,
+        },
+    };
+
+    const action = (
+      <Button type="primary" onClick={this.handleSubmit} loading={submitting}>
+        提交
+      </Button>
+    );
+
+    return (
+      <Panel title="修改" back="/<%=process.env.servicePackage%>/<%=process.env.entityPath%>" action={action}>
+        <Form style={{ marginTop: 8 }}>
+          <Card className={styles.card} bordered={false}>
+						<%_ for(let i=0; i<table.length; i++) {_%>
+							<%_ if(!process.env.tenantColumn.includes(table[i].name)){ _%>
+						<FormItem {...formItemLayout} label="<%=table[i].comment%>">
+								{getFieldDecorator('<%=table[i].propertyName%>', {
+										rules: [
+											{
+													required: true,
+													message: '请输入<%=table[i].comment%>',
+											},
+										],
+										initialValue: detail.<%=table[i].propertyName%>,
+								})(<Input placeholder="请输入<%=table[i].comment%>" />)}
+						</FormItem>
+							<%_}_%>
+					<%_}_%>
+          </Card>
+        </Form>
+      </Panel>
+    );
+  }
+}
+
+export default <%=process.env.entity%>Edit;
